@@ -185,15 +185,16 @@ void setup() {
     // testfillrect(buffer);
     //  testdrawline(buffer);
     //testdrawcircle(buffer);
-    ///fillcircle(buffer, 32, 32, 10, 1);
-      testprintchar(buffer);
+    //fillcircle(buffer, 32, 32, 10, 1);
+    //testdrawchar(buffer);
+    drawstring(buffer, 0, 0, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
     LED_PORT &= ~_BV(LED);
     write_buffer(buffer);
 }
 
-void testprintchar(uint8_t *buff) {
+void testdrawchar(uint8_t *buff) {
   for (uint8_t i=0; i < 168; i++) {
-    printchar(buffer, (i % 21) * 6, i/21, i);
+    drawchar(buffer, (i % 21) * 6, i/21, i);
   }    
 }
 

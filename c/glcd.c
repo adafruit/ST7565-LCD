@@ -21,7 +21,23 @@ void setpixel(uint8_t *buff, uint8_t x, uint8_t y, uint8_t color) {
 }
 
 
-void printchar(uint8_t *buff, uint8_t x, uint8_t line, uint8_t c) {
+void drawstring(uint8_t *buff, uint8_t x, uint8_t line, uint8_t *c) {
+  while (c[0] != 0) {
+    uart_putchar(c[0]);
+    drawchar(buff, x, line, c[0]);
+    c++;
+    x += 6; // 6 pixels wide
+    if (x + 6 >= LCDWIDTH) {
+      x = 0;    // ran out of this line
+      line++;
+    }
+    if (line >= (LCDHEIGHT/8))
+      return;        // ran out of space :(
+  }
+
+}
+
+void drawchar(uint8_t *buff, uint8_t x, uint8_t line, uint8_t c) {
   for (uint8_t i =0; i<5; i++ ) {
     buff[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
     x++;
