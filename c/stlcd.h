@@ -48,16 +48,10 @@ void st7565_command(uint8_t c);
 void st7565_data(uint8_t c);
 void st7565_set_brightness(uint8_t val);
 
+
 void clear_screen(void);
 void clear_buffer(uint8_t *buffer);
 void write_buffer(uint8_t *buffer);
 
-void setpixel(uint8_t *buff, uint8_t x, uint8_t y);
-void clearpixel(uint8_t *buff, uint8_t x, uint8_t y);
+void testdrawbitmap(uint8_t *buff, const uint8_t *bitmap, uint8_t w, uint8_t h);
 
-void drawrect(uint8_t *buff,
-	      uint8_t x, uint8_t y, uint8_t w, uint8_t h, 
-	      uint8_t color);
-void drawline(uint8_t *buff,
-	      uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, 
-	      uint8_t color);
