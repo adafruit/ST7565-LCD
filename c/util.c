@@ -1,3 +1,5 @@
+// general purpose stuff, use as you'd like!
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>

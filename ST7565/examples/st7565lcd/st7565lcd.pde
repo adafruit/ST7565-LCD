@@ -1,3 +1,5 @@
+// (c) adafruit industries - public domain!
+
 #include "ST7565.h"
 
 int ledPin =  13;    // LED connected to digital pin 13

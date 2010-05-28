@@ -1,3 +1,5 @@
+// 5x7 LCD font 'flipped' for the ST7565 - public domain
+
 #include <avr/io.h>
 #include <avr/pgmspace.h> 
  
