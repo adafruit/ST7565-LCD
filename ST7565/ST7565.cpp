@@ -438,8 +438,11 @@ void ST7565::st7565_set_brightness(uint8_t val) {
     st7565_command(CMD_SET_VOLUME_SECOND | (val & 0x3f));
 }
 
-
 void ST7565::display(void) {
+  display(buffer);
+}
+
+void ST7565::display(uint8_t *buf) {
   uint8_t c, p;
 
   for(p = 0; p < 8; p++) {
@@ -461,10 +464,39 @@ void ST7565::display(void) {
     for(c = 0; c < 128; c++) {
       //uart_putw_dec(c);
       //uart_putchar(' ');
+      st7565_data(buf[(128*p)+c]);
+    }
+  }
+
+}
+
+
+/* ****************************************************************
+void ST7565::display(void) {
+  uint8_t c, p;
+
+  for(p = 0; p < 8; p++) {
+    //putstring("new page! ");
+    //uart_putw_dec(p);
+    //putstring_nl("");
+
+    st7565_command(CMD_SET_PAGE | pagemap[p]);
+    st7565_command(CMD_SET_COLUMN_LOWER | (0x0 & 0xf));
+    st7565_command(CMD_SET_COLUMN_UPPER | ((0x0 >> 4) & 0xf));
+    st7565_command(CMD_RMW);
+    st7565_data(0xff);
+    
+    //st7565_data(0x80);
+    //continue;
+    
+    for(c = 0; c < 128; c++) {
+      //uart_putw_dec(c);
+      //uart_putchar(' ');
       st7565_data(buffer[(128*p)+c]);
     }
   }
 }
+**************************************************************** */
 
 // clear everything
 void ST7565::clear(void) {

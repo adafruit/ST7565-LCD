@@ -83,7 +83,8 @@ class ST7565 {
   void st7565_set_brightness(uint8_t val);
   void clear_display(void);
   void clear();
-  void display();
+  void display(uint8_t *buf);
+  void display(void);
 
   void setpixel(uint8_t x, uint8_t y, uint8_t color);
   void fillcircle(uint8_t x0, uint8_t y0, uint8_t r, 
