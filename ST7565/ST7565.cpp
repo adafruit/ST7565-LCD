@@ -38,6 +38,7 @@ const uint8_t pagemap[] = { 3, 2, 1, 0, 7, 6, 5, 4 };
 // a 5x7 font table
 extern uint8_t PROGMEM font[];
 
+/* ****************************************************************
 // the memory buffer for the LCD
 static uint8_t buffer[1024] = { 
 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 
@@ -111,6 +112,16 @@ static uint8_t buffer[1024] = {
 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,};
+
+***************************************************************** */
+
+void ST7565::setbuffer(uint8_t *buf) {
+  buffer = buf;
+}
+
+uint8_t * ST7565::getbuffer() {
+  return buffer;
+}
 
 
 void ST7565::drawbitmap(uint8_t x, uint8_t y, 
@@ -296,6 +307,14 @@ void ST7565::setpixel(uint8_t x, uint8_t y, uint8_t color) {
     buffer[x+ (y/8)*128] &= ~_BV(7-(y%8)); 
 }
 
+// get a single pixel
+uint8_t ST7565::getpixel(uint8_t x, uint8_t y) {
+  x %= LCDWIDTH;
+  y %= LCDHEIGHT;
+  // x is which column
+  return buffer[x+ (y/8)*128] & _BV(7-(y%8)) ? 1 : 0;  
+}
+
 
 void ST7565::st7565_init(void) {
   // set pin directions
@@ -470,33 +489,6 @@ void ST7565::display(uint8_t *buf) {
 
 }
 
-
-/* ****************************************************************
-void ST7565::display(void) {
-  uint8_t c, p;
-
-  for(p = 0; p < 8; p++) {
-    //putstring("new page! ");
-    //uart_putw_dec(p);
-    //putstring_nl("");
-
-    st7565_command(CMD_SET_PAGE | pagemap[p]);
-    st7565_command(CMD_SET_COLUMN_LOWER | (0x0 & 0xf));
-    st7565_command(CMD_SET_COLUMN_UPPER | ((0x0 >> 4) & 0xf));
-    st7565_command(CMD_RMW);
-    st7565_data(0xff);
-    
-    //st7565_data(0x80);
-    //continue;
-    
-    for(c = 0; c < 128; c++) {
-      //uart_putw_dec(c);
-      //uart_putchar(' ');
-      st7565_data(buffer[(128*p)+c]);
-    }
-  }
-}
-**************************************************************** */
 
 // clear everything
 void ST7565::clear(void) {

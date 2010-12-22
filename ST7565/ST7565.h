@@ -73,8 +73,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 class ST7565 {
  public:
-  ST7565(int8_t SID, int8_t SCLK, int8_t A0, int8_t RST, int8_t CS) :sid(SID), sclk(SCLK), a0(A0), rst(RST), cs(CS) {}
-  ST7565(int8_t SID, int8_t SCLK, int8_t A0, int8_t RST) :sid(SID), sclk(SCLK), a0(A0), rst(RST), cs(-1) {}
+ ST7565(int8_t SID, int8_t SCLK, int8_t A0, int8_t RST, int8_t CS) : sid(SID), sclk(SCLK), a0(A0), rst(RST), cs(CS), buffer(0) { }
+ ST7565(int8_t SID, int8_t SCLK, int8_t A0, int8_t RST) : sid(SID), sclk(SCLK), a0(A0), rst(RST), cs(-1), buffer(0) { }
 
 
   void st7565_init(void);
@@ -85,8 +85,11 @@ class ST7565 {
   void clear();
   void display(uint8_t *buf);
   void display(void);
+  uint8_t * getbuffer();
+  void setbuffer(uint8_t *buf);
 
   void setpixel(uint8_t x, uint8_t y, uint8_t color);
+  uint8_t getpixel(uint8_t x, uint8_t y);
   void fillcircle(uint8_t x0, uint8_t y0, uint8_t r, 
 		  uint8_t color);
   void drawcircle(uint8_t x0, uint8_t y0, uint8_t r, 
@@ -106,7 +109,7 @@ class ST7565 {
 
  private:
   int8_t sid, sclk, a0, rst, cs;
-  void spiwrite(uint8_t c);
-
   //uint8_t buffer[128*64/8]; 
+  uint8_t *buffer;
+  void spiwrite(uint8_t c);
 };
