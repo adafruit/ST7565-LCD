@@ -1,7 +1,7 @@
 // (c) Tom Soulanille - public domain!
 // Modified from:
 // (c) adafruit industries - public domain!
-
+#define TEENSY2
 #include "ST7565.h"
 
 int ledPin =  13;    // LED connected to digital pin 13
