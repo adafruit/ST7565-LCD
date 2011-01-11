@@ -1,30 +1,36 @@
-// (c) adafruit industries - public domain!
-
 #include "ST7565.h"
 
 int ledPin =  13;    // LED connected to digital pin 13
 
+// the LCD backlight is connected up to a pin so you can turn it on & off
 #define BACKLIGHT_LED 10
-// The setup() method runs once, when the sketch starts
 
+// pin 9 - Serial data out (SID)
+// pin 8 - Serial clock out (SCLK)
+// pin 7 - Data/Command select (RS or A0)
+// pin 6 - LCD reset (RST)
+// pin 5 - LCD chip select (CS)
 ST7565 glcd(9, 8, 7, 6, 5);
 
 #define LOGO16_GLCD_HEIGHT 16 
 #define LOGO16_GLCD_WIDTH  16 
 
+// a bitmap of a 16x16 fruit icon
 static unsigned char __attribute__ ((progmem)) logo16_glcd_bmp[]={
 0x30, 0xf0, 0xf0, 0xf0, 0xf0, 0x30, 0xf8, 0xbe, 0x9f, 0xff, 0xf8, 0xc0, 0xc0, 0xc0, 0x80, 0x00, 
 0x20, 0x3c, 0x3f, 0x3f, 0x1f, 0x19, 0x1f, 0x7b, 0xfb, 0xfe, 0xfe, 0x07, 0x07, 0x07, 0x03, 0x00, };
 
+// The setup() method runs once, when the sketch starts
 void setup()   {                
   Serial.begin(9600);
 
   Serial.print(freeRam());
   
+  // turn on backlight
   pinMode(BACKLIGHT_LED, OUTPUT);
   digitalWrite(BACKLIGHT_LED, HIGH);
 
-  
+  // initialize and set the contrast to 0x18
   glcd.st7565_init();
   glcd.st7565_command(CMD_DISPLAY_ON);
   glcd.st7565_command(CMD_SET_ALLPTS_NORMAL);
@@ -36,13 +42,13 @@ void setup()   {
 
   // draw a single pixel
   glcd.setpixel(10, 10, BLACK);
-  glcd.display();
+  glcd.display();        // show the changes to the buffer
   delay(2000);
   glcd.clear();
 
   // draw many lines
   testdrawline();
-  glcd.display();
+  glcd.display();       // show the lines
   delay(2000);
   glcd.clear();
 
