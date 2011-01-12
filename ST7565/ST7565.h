@@ -86,6 +86,7 @@ class ST7565 {
   void display();
 
   void setpixel(uint8_t x, uint8_t y, uint8_t color);
+  uint8_t getpixel(uint8_t x, uint8_t y);
   void fillcircle(uint8_t x0, uint8_t y0, uint8_t r, 
 		  uint8_t color);
   void drawcircle(uint8_t x0, uint8_t y0, uint8_t r, 

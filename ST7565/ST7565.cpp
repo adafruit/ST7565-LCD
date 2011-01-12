@@ -142,7 +142,7 @@ void ST7565::drawstring(uint8_t x, uint8_t line, char *c) {
 
 void  ST7565::drawchar(uint8_t x, uint8_t line, char c) {
   for (uint8_t i =0; i<5; i++ ) {
-    buffer[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
+    st7565_buffer[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
     x++;
   }
 }
@@ -291,9 +291,18 @@ void ST7565::setpixel(uint8_t x, uint8_t y, uint8_t color) {
 
   // x is which column
   if (color) 
-    buffer[x+ (y/8)*128] |= _BV(7-(y%8));  
+    st7565_buffer[x+ (y/8)*128] |= _BV(7-(y%8));  
   else
-    buffer[x+ (y/8)*128] &= ~_BV(7-(y%8)); 
+    st7565_buffer[x+ (y/8)*128] &= ~_BV(7-(y%8)); 
+}
+
+
+// the most basic function, get a single pixel
+uint8_t ST7565::getpixel(uint8_t x, uint8_t y) {
+  if ((x >= LCDWIDTH) || (y >= LCDHEIGHT))
+    return 0;
+
+  return (st7565_buffer[x+ (y/8)*128] >> (7-(y%8))) & 0x1;  
 }
 
 
@@ -461,14 +470,14 @@ void ST7565::display(void) {
     for(c = 0; c < 128; c++) {
       //uart_putw_dec(c);
       //uart_putchar(' ');
-      st7565_data(buffer[(128*p)+c]);
+      st7565_data(st7565_buffer[(128*p)+c]);
     }
   }
 }
 
 // clear everything
 void ST7565::clear(void) {
-  memset(buffer, 0, 1024);
+  memset(st7565_buffer, 0, 1024);
 }
 
 
