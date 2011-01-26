@@ -31,10 +31,7 @@ void setup()   {
   digitalWrite(BACKLIGHT_LED, HIGH);
 
   // initialize and set the contrast to 0x18
-  glcd.st7565_init();
-  glcd.st7565_command(CMD_DISPLAY_ON);
-  glcd.st7565_command(CMD_SET_ALLPTS_NORMAL);
-  glcd.st7565_set_brightness(0x18);
+  glcd.begin(0x18);
 
   glcd.display(); // show splashscreen
   delay(2000);

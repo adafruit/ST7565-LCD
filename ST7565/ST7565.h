@@ -78,6 +78,7 @@ class ST7565 {
 
 
   void st7565_init(void);
+  void begin(uint8_t contrast);
   void st7565_command(uint8_t c);
   void st7565_data(uint8_t c);
   void st7565_set_brightness(uint8_t val);
@@ -99,6 +100,7 @@ class ST7565 {
 		uint8_t color);
   void drawchar(uint8_t x, uint8_t line, char c);
   void drawstring(uint8_t x, uint8_t line, char *c);
+  void drawstring_P(uint8_t x, uint8_t line, const char *c);
 
   void drawbitmap(uint8_t x, uint8_t y, 
 		  const uint8_t *bitmap, uint8_t w, uint8_t h,
@@ -107,6 +109,8 @@ class ST7565 {
  private:
   int8_t sid, sclk, a0, rst, cs;
   void spiwrite(uint8_t c);
+
+  void my_setpixel(uint8_t x, uint8_t y, uint8_t color);
 
   //uint8_t buffer[128*64/8]; 
 };
