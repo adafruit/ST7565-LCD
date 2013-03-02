@@ -180,11 +180,11 @@ void ST7565::drawstring_P(uint8_t x, uint8_t line, const char *str) {
 
 void  ST7565::drawchar(uint8_t x, uint8_t line, char c) {
   for (uint8_t i =0; i<5; i++ ) {
-    st7565_buffer[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
+    st7565_buffer[x + (line*128) ] = pgm_read_byte(font+((unsigned char)c*5)+i);
     x++;
   }
 
-  updateBoundingBox(x, line*8, x+5, line*8 + 8);
+  updateBoundingBox(x-5, line*8, x-1, line*8 + 8);
 }
 
 
