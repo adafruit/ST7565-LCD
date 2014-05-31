@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <stdlib.h>
+#include <SPI.h>
 
 #include "ST7565.h"
 
@@ -298,9 +299,6 @@ void ST7565::drawcircle(uint8_t x0, uint8_t y0, uint8_t r,
     my_setpixel(x0 - y, y0 - x, color);
     
   }
-
-
-
 }
 
 void ST7565::fillcircle(uint8_t x0, uint8_t y0, uint8_t r, 
@@ -374,22 +372,37 @@ uint8_t ST7565::getpixel(uint8_t x, uint8_t y) {
 
 void ST7565::begin(uint8_t contrast) {
   st7565_init();
+  if (cs > 0) {
+    digitalWrite(cs, LOW);
+  }
+  
   st7565_command(CMD_DISPLAY_ON);
   st7565_command(CMD_SET_ALLPTS_NORMAL);
   st7565_set_brightness(contrast);
+  
+  if (cs > 0) {
+    digitalWrite(cs, HIGH);
+  }
 }
 
 void ST7565::st7565_init(void) {
-  // set pin directions
-  pinMode(sid, OUTPUT);
-  pinMode(sclk, OUTPUT);
+  if (sid > 0) {
+    // set pin directions
+    pinMode(sid, OUTPUT);
+    pinMode(sclk, OUTPUT);
+  }
+  else {
+    SPI.begin();
+  }
+
   pinMode(a0, OUTPUT);
   pinMode(rst, OUTPUT);
-  pinMode(cs, OUTPUT);
 
   // toggle RST low to reset; CS low so it'll listen to us
-  if (cs > 0)
+  if (cs > 0) {
+    pinMode(cs, OUTPUT);
     digitalWrite(cs, LOW);
+  }
 
   digitalWrite(rst, LOW);
   _delay_ms(500);
@@ -427,97 +440,24 @@ void ST7565::st7565_init(void) {
   // set column address
   // write display data
 
+  if (cs > 0) {
+    digitalWrite(cs, HIGH);
+  }
+  
   // set up a bounding box for screen updates
 
   updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
 }
 
-inline void ST7565::spiwrite(uint8_t c) {
-  shiftOut(sid, sclk, MSBFIRST, c);
-  /*
-  int8_t i;
-  for (i=7; i>=0; i--) {
-    SCLK_PORT &= ~_BV(SCLK);
-    if (c & _BV(i))
-      SID_PORT |= _BV(SID);
-    else
-      SID_PORT &= ~_BV(SID);
-    SCLK_PORT |= _BV(SCLK);
+void ST7565::st7565_out(uint8_t c, uint8_t data) {
+  digitalWrite(a0, data);
+
+  if (sid > 0) {
+    shiftOut(sid, sclk, MSBFIRST, c);
   }
-  */
-
-  /*
-  // loop unwrapped! too fast doesnt work :(
- 
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(7))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
-
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(6))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
- 
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(5))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
-
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(4))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
-
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(3))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
-
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(2))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
-
-
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(1))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
-
-  SCLK_PORT &= ~_BV(SCLK);
-  if (c & _BV(0))
-    SID_PORT |= _BV(SID);
-  else
-    SID_PORT &= ~_BV(SID);
-  SCLK_PORT |= _BV(SCLK);
-*/
-
-}
-void ST7565::st7565_command(uint8_t c) {
-  digitalWrite(a0, LOW);
-
-  spiwrite(c);
-}
-
-void ST7565::st7565_data(uint8_t c) {
-  digitalWrite(a0, HIGH);
-
-  spiwrite(c);
+  else {
+    SPI.transfer(c);
+  }
 }
 void ST7565::st7565_set_brightness(uint8_t val) {
     st7565_command(CMD_SET_VOLUME_FIRST);
@@ -534,7 +474,10 @@ void ST7565::display(void) {
   Serial.print(","); Serial.print(yUpdateMin, DEC); 
   Serial.print(", "); Serial.print(yUpdateMax, DEC); Serial.println(")");
   */
-
+  if (cs > 0) {
+    digitalWrite(cs, LOW);
+  }
+  
   for(p = 0; p < 8; p++) {
     /*
       putstring("new page! ");
@@ -574,6 +517,10 @@ void ST7565::display(void) {
     }
   }
 
+  if (cs > 0) {
+    digitalWrite(cs, HIGH);
+  }
+  
 #ifdef enablePartialUpdate
   xUpdateMin = LCDWIDTH - 1;
   xUpdateMax = 0;
@@ -593,6 +540,7 @@ void ST7565::clear(void) {
 void ST7565::clear_display(void) {
   uint8_t p, c;
   
+  digitalWrite(cs, LOW);
   for(p = 0; p < 8; p++) {
     /*
       putstring("new page! ");
@@ -609,4 +557,5 @@ void ST7565::clear_display(void) {
       st7565_data(0x0);
     }     
   }
+  digitalWrite(cs, HIGH);
 }

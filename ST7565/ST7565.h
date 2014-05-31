@@ -75,6 +75,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #define CMD_NOP  0xE3
 #define CMD_TEST  0xF0
 
+#define st7565_command(a) st7565_out(a, LOW)
+#define st7565_data(a)    st7565_out(a, HIGH)
+
 class ST7565 {
  public:
   ST7565(int8_t SID, int8_t SCLK, int8_t A0, int8_t RST, int8_t CS) :sid(SID), sclk(SCLK), a0(A0), rst(RST), cs(CS) {}
@@ -83,8 +86,7 @@ class ST7565 {
 
   void st7565_init(void);
   void begin(uint8_t contrast);
-  void st7565_command(uint8_t c);
-  void st7565_data(uint8_t c);
+  void st7565_out(uint8_t c, uint8_t data);
   void st7565_set_brightness(uint8_t val);
   void clear_display(void);
   void clear();
@@ -112,7 +114,6 @@ class ST7565 {
 
  private:
   int8_t sid, sclk, a0, rst, cs;
-  void spiwrite(uint8_t c);
 
   void my_setpixel(uint8_t x, uint8_t y, uint8_t color);
 
