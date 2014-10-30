@@ -147,9 +147,9 @@ void ST7565::drawbitmap(uint8_t x, uint8_t y,
   updateBoundingBox(x, y, x+w, y+h);
 }
 
-void ST7565::drawstring(uint8_t x, uint8_t line, char *c) {
+void ST7565::drawstring(uint8_t x, uint8_t line, char *c, uint8_t color) {
   while (c[0] != 0) {
-    drawchar(x, line, c[0]);
+    drawchar(x, line, c[0], color);
     c++;
     x += 6; // 6 pixels wide
     if (x + 6 >= LCDWIDTH) {
@@ -162,12 +162,12 @@ void ST7565::drawstring(uint8_t x, uint8_t line, char *c) {
 }
 
 
-void ST7565::drawstring_P(uint8_t x, uint8_t line, const char *str) {
+void ST7565::drawstring_P(uint8_t x, uint8_t line, const char *str, uint8_t color) {
   while (1) {
     char c = pgm_read_byte(str++);
     if (! c)
       return;
-    drawchar(x, line, c);
+    drawchar(x, line, c, color);
     x += 6; // 6 pixels wide
     if (x + 6 >= LCDWIDTH) {
       x = 0;    // ran out of this line
@@ -178,9 +178,12 @@ void ST7565::drawstring_P(uint8_t x, uint8_t line, const char *str) {
   }
 }
 
-void  ST7565::drawchar(uint8_t x, uint8_t line, char c) {
+void  ST7565::drawchar(uint8_t x, uint8_t line, char c, uint8_t color) {
   for (uint8_t i =0; i<5; i++ ) {
-    st7565_buffer[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
+    if (color)
+    	st7565_buffer[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
+    else
+    	st7565_buffer[x + (line*128) ] = ~pgm_read_byte(font+(c*5)+i);
     x++;
   }
 
