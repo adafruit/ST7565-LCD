@@ -205,7 +205,7 @@ void setup(void) {
     //testdrawcircle(buffer);
     //fillcircle(buffer, 32, 32, 10, 1);
     //testdrawchar(buffer);
-    // drawstring(buffer, 0, 0, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+    // drawstring(buffer, 0, 0, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", 1);
     testdrawbitmap(buffer, logo16_glcd_bmp, 16, 16);
 
     LED_PORT &= ~_BV(LED);
@@ -253,7 +253,7 @@ void testdrawbitmap(uint8_t *buff, const uint8_t *bitmap, uint8_t w, uint8_t h) 
 
 void testdrawchar(uint8_t *buff) {
   for (uint8_t i=0; i < 168; i++) {
-    drawchar(buffer, (i % 21) * 6, i/21, i);
+    drawchar(buffer, (i % 21) * 6, i/21, i, 1);
   }    
 }
 

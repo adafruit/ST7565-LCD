@@ -53,10 +53,10 @@ void drawbitmap(uint8_t *buff, uint8_t x, uint8_t y,
 
 }
 
-void drawstring(uint8_t *buff, uint8_t x, uint8_t line, uint8_t *c) {
+void drawstring(uint8_t *buff, uint8_t x, uint8_t line, uint8_t *c, uint8_t color) {
   while (c[0] != 0) {
     uart_putchar(c[0]);
-    drawchar(buff, x, line, c[0]);
+    drawchar(buff, x, line, c[0], color);
     c++;
     x += 6; // 6 pixels wide
     if (x + 6 >= LCDWIDTH) {
@@ -69,9 +69,13 @@ void drawstring(uint8_t *buff, uint8_t x, uint8_t line, uint8_t *c) {
 
 }
 
-void drawchar(uint8_t *buff, uint8_t x, uint8_t line, uint8_t c) {
+void drawchar(uint8_t *buff, uint8_t x, uint8_t line, uint8_t c,
+		uint8_t color) {
   for (uint8_t i =0; i<5; i++ ) {
-    buff[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
+    if (color)
+    	buff[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
+    else
+    	buff[x + (line*128) ] = ~pgm_read_byte(font+(c*5)+i);
     x++;
   }
 }
