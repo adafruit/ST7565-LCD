@@ -80,7 +80,7 @@ void setup()   {
   glcd.clear();
 
   // draw a string at location (0,0)
-  glcd.drawstring(0, 0, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation");
+  glcd.drawstring(0, 0, "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation", 1);
   glcd.display();
   delay(2000);
   glcd.clear();
@@ -151,7 +151,7 @@ void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
 
 void testdrawchar(void) {
   for (uint8_t i=0; i < 168; i++) {
-    glcd.drawchar((i % 21) * 6, i/21, i);
+    glcd.drawchar((i % 21) * 6, i/21, i, 1);
   }    
 }
 
