@@ -37,7 +37,7 @@ uint8_t is_reversed = 0;
 const uint8_t pagemap[] = { 3, 2, 1, 0, 7, 6, 5, 4 };
 
 // a 5x7 font table
-extern uint8_t PROGMEM font[];
+const extern uint8_t PROGMEM font[];
 
 // the memory buffer for the LCD
 uint8_t st7565_buffer[1024] = { 
