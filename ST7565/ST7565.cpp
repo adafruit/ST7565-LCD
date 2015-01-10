@@ -23,9 +23,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 //#include <Wire.h>
-#include <avr/pgmspace.h>
-#include <util/delay.h>
-#include <stdlib.h>
+#if defined (WIN32)
+	#include "arduino.h"
+	#include <stdlib.h>
+#else
+	#include <avr/pgmspace.h>
+	#include <util/delay.h>
+	#include <stdlib.h>
+#endif
 
 #include "ST7565.h"
 
@@ -37,7 +42,7 @@ uint8_t is_reversed = 0;
 const uint8_t pagemap[] = { 3, 2, 1, 0, 7, 6, 5, 4 };
 
 // a 5x7 font table
-const extern uint8_t PROGMEM font[];
+extern "C" const uint8_t PROGMEM font[];
 
 // the memory buffer for the LCD
 uint8_t st7565_buffer[1024] = { 

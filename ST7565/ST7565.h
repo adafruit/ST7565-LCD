@@ -28,6 +28,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  #include "WProgram.h"
 #endif
 
+#if defined(WIN32)
+	#define PROGMEM
+	#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
+	#define pgm_read_word(addr) (*(const unsigned short *)(addr))
+	typedef unsigned char prog_uchar;
+	#define _delay_ms(int) delay(int)
+#endif
+
 #define swap(a, b) { uint8_t t = a; a = b; b = t; }
 
 #define BLACK 1
