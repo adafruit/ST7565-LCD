@@ -36,6 +36,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	#define _delay_ms(int) delay(int)
 #endif
 
+#if defined(_HWSPI_)
+	#include "spi.h"
+#endif
+
 #define swap(a, b) { uint8_t t = a; a = b; b = t; }
 
 #define BLACK 1

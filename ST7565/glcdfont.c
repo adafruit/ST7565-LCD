@@ -7,6 +7,7 @@
 	#define pgm_read_word(addr) (*(const unsigned short *)(addr))
 	typedef unsigned char prog_uchar;
 #else
+	#include <stdint.h>
 	#include <avr/io.h>
 	#include <avr/pgmspace.h> 
 #endif

@@ -1,9 +1,6 @@
 // Main.cpp : Defines the entry point for the console application.
 //
 
-// Main.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "arduino.h"
 #include "..\..\..\ST7565.h"
@@ -21,7 +18,6 @@ void testdrawline();
 	#define srandom srand
 #endif
 
-
 int _tmain(int argc, _TCHAR* argv[])
 {
 	return RunArduinoSketch();
@@ -35,7 +31,10 @@ int _tmain(int argc, _TCHAR* argv[])
 // pin 10 - Data/Command select (RS or A0)
 // pin 9 - LCD reset (RST)
 // pin 8 - LCD chip select (CS)
-
+//
+// To turn on HW SPI either add _HWSPI_ to the ST7565.h file or 
+// set it in the compiler pre-processor definitions. In this example I
+// added it to the ST7565.cpp file (Line 35)
 ST7565 glcd(11, 13, 10, 9, 8);
 
 #define LOGO16_GLCD_HEIGHT 16 

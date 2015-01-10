@@ -32,6 +32,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 	#include <stdlib.h>
 #endif
 
+// Turn on HW SPI by defining the _HWSPI_ identifier
+#define _HWSPI_
+
 #include "ST7565.h"
 
 #define ST7565_STARTBYTES 1
@@ -392,6 +395,10 @@ void ST7565::st7565_init(void) {
   pinMode(rst, OUTPUT);
   pinMode(cs, OUTPUT);
 
+#ifdef _HWSPI_
+  SPI.begin();
+#endif
+
   // toggle RST low to reset; CS low so it'll listen to us
   if (cs > 0)
     digitalWrite(cs, LOW);
@@ -438,7 +445,11 @@ void ST7565::st7565_init(void) {
 }
 
 inline void ST7565::spiwrite(uint8_t c) {
+#ifdef _HWSPI_
+	SPI.transfer(c);
+#else
   shiftOut(sid, sclk, MSBFIRST, c);
+#endif
   /*
   int8_t i;
   for (i=7; i>=0; i--) {
