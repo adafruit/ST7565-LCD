@@ -1,8 +1,17 @@
 // 5x7 LCD font 'flipped' for the ST7565 - public domain
 
-#include <avr/io.h>
-#include <avr/pgmspace.h> 
- 
+#if defined(WIN32)
+	#include <stdint.h>
+	#define PROGMEM
+	#define pgm_read_byte(addr) (*(const unsigned char *)(addr))
+	#define pgm_read_word(addr) (*(const unsigned short *)(addr))
+	typedef unsigned char prog_uchar;
+#else
+	#include <stdint.h>
+	#include <avr/io.h>
+	#include <avr/pgmspace.h> 
+#endif
+
 const uint8_t font[] PROGMEM = { 
   0x0, 0x0, 0x0, 0x0, 0x0,       // Ascii 0
   0x7C, 0xDA, 0xF2, 0xDA, 0x7C,  //ASC(01)

@@ -23,9 +23,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 //#include <Wire.h>
-#include <avr/pgmspace.h>
-#include <util/delay.h>
-#include <stdlib.h>
+#if defined (WIN32)
+	#include "arduino.h"
+	#include <stdlib.h>
+#else
+	#include <avr/pgmspace.h>
+	#include <util/delay.h>
+	#include <stdlib.h>
+#endif
+
+// Turn on HW SPI by defining the _HWSPI_ identifier
+#define _HWSPI_
 
 #include "ST7565.h"
 
@@ -37,7 +45,7 @@ uint8_t is_reversed = 0;
 const uint8_t pagemap[] = { 3, 2, 1, 0, 7, 6, 5, 4 };
 
 // a 5x7 font table
-const extern uint8_t PROGMEM font[];
+extern "C" const uint8_t PROGMEM font[];
 
 // the memory buffer for the LCD
 uint8_t st7565_buffer[1024] = { 
@@ -387,6 +395,10 @@ void ST7565::st7565_init(void) {
   pinMode(rst, OUTPUT);
   pinMode(cs, OUTPUT);
 
+#ifdef _HWSPI_
+  SPI.begin();
+#endif
+
   // toggle RST low to reset; CS low so it'll listen to us
   if (cs > 0)
     digitalWrite(cs, LOW);
@@ -433,7 +445,11 @@ void ST7565::st7565_init(void) {
 }
 
 inline void ST7565::spiwrite(uint8_t c) {
+#ifdef _HWSPI_
+	SPI.transfer(c);
+#else
   shiftOut(sid, sclk, MSBFIRST, c);
+#endif
   /*
   int8_t i;
   for (i=7; i>=0; i--) {
