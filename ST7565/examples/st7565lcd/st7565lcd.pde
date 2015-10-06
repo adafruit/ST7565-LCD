@@ -3,7 +3,7 @@
 int ledPin =  13;    // LED connected to digital pin 13
 
 // the LCD backlight is connected up to a pin so you can turn it on & off
-#define BACKLIGHT_LED 10
+#define BACKLIGHT_LED 4
 
 // pin 9 - Serial data out (SID)
 // pin 8 - Serial clock out (SCLK)
@@ -24,11 +24,13 @@ const static unsigned char __attribute__ ((progmem)) logo16_glcd_bmp[]={
 void setup()   {                
   Serial.begin(9600);
 
+#ifdef __AVR__
   Serial.print(freeRam());
-  
+#endif
+
   // turn on backlight
   pinMode(BACKLIGHT_LED, OUTPUT);
-  digitalWrite(BACKLIGHT_LED, HIGH);
+  digitalWrite(BACKLIGHT_LED, LOW);
 
   // initialize and set the contrast to 0x18
   glcd.begin(0x18);
@@ -93,6 +95,7 @@ void setup()   {
 void loop()                     
 {}
 
+#ifdef __AVR__
 // this handy function will return the number of bytes currently free in RAM, great for debugging!   
 int freeRam(void)
 {
@@ -107,7 +110,7 @@ int freeRam(void)
   }
   return free_memory; 
 } 
-
+#endif
 
 #define NUMFLAKES 10
 #define XPOS 0
@@ -116,13 +119,13 @@ int freeRam(void)
 
 void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
   uint8_t icons[NUMFLAKES][3];
-  srandom(666);     // whatever seed
+  randomSeed(666);     // whatever seed
  
   // initialize
   for (uint8_t f=0; f< NUMFLAKES; f++) {
-    icons[f][XPOS] = random() % 128;
+    icons[f][XPOS] = random(128);
     icons[f][YPOS] = 0;
-    icons[f][DELTAY] = random() % 5 + 1;
+    icons[f][DELTAY] = random(5) + 1;
   }
 
   while (1) {
@@ -140,9 +143,9 @@ void testdrawbitmap(const uint8_t *bitmap, uint8_t w, uint8_t h) {
       icons[f][YPOS] += icons[f][DELTAY];
       // if its gone, reinit
       if (icons[f][YPOS] > 64) {
-	icons[f][XPOS] = random() % 128;
+	icons[f][XPOS] = random(128);
 	icons[f][YPOS] = 0;
-	icons[f][DELTAY] = random() % 5 + 1;
+	icons[f][DELTAY] = random(5) + 1;
       }
     }
   }

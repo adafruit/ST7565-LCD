@@ -1,9 +1,15 @@
 // 5x7 LCD font 'flipped' for the ST7565 - public domain
 
+#ifdef __AVR__
 #include <avr/io.h>
 #include <avr/pgmspace.h> 
- 
-const uint8_t font[] PROGMEM = { 
+#endif
+
+#ifndef __AVR__
+#define PROGMEM
+#endif
+
+const unsigned char font[] PROGMEM = {
   0x0, 0x0, 0x0, 0x0, 0x0,       // Ascii 0
   0x7C, 0xDA, 0xF2, 0xDA, 0x7C,  //ASC(01)
   0x7C, 0xD6, 0xF2, 0xD6, 0x7C,  //ASC(02)

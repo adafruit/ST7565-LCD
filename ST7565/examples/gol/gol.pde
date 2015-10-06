@@ -7,7 +7,7 @@
 int ledPin =  13;    // LED connected to digital pin 13
 
 // the LCD backlight is connected up to a pin so you can turn it on & off
-#define BACKLIGHT_LED 10
+#define BACKLIGHT_LED 4
 
 // pin 9 - Serial data out (SID)
 // pin 8 - Serial clock out (SCLK)
@@ -31,10 +31,12 @@ extern uint8_t st7565_buffer[1024];
 void setup()   {                
   Serial.begin(9600);
 
-  Serial.println(freeRam());
+#ifdef __AVR__
+  Serial.print(freeRam());
+#endif
   
   pinMode(BACKLIGHT_LED, OUTPUT);
-  digitalWrite(BACKLIGHT_LED, HIGH);
+  digitalWrite(BACKLIGHT_LED, LOW);
 
   glcd.st7565_init();
   glcd.st7565_command(CMD_DISPLAY_ON);
@@ -45,7 +47,9 @@ void setup()   {
 
   glcd.clear();
 
+#ifdef __AVR__
   Serial.println(freeRam());
+#endif
   
   // A little of Conway's game of Life
   drawGabrielsp138();
@@ -58,6 +62,7 @@ void loop()
   glcd.display();
 }
 
+#ifdef __AVR__
 // this handy function will return the number of bytes currently free in RAM, great for debugging!   
 int freeRam(void)
 {
@@ -72,6 +77,7 @@ int freeRam(void)
   }
   return free_memory; 
 } 
+#endif
 
 // http://www.conwaylife.com/wiki/index.php?title=Gabriel%27s_p138
 void drawGabrielsp138() {

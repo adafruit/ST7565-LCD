@@ -23,8 +23,20 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 //#include <Wire.h>
+#ifdef __AVR__
 #include <avr/pgmspace.h>
 #include <util/delay.h>
+#endif
+
+#ifndef _delay_ms
+  #define _delay_ms(t) delay(t)
+#endif
+
+#ifndef _BV
+  #define _BV(bit) (1<<(bit))
+#endif
+
+
 #include <stdlib.h>
 
 #include "ST7565.h"
@@ -433,7 +445,22 @@ void ST7565::st7565_init(void) {
 }
 
 inline void ST7565::spiwrite(uint8_t c) {
-  shiftOut(sid, sclk, MSBFIRST, c);
+    
+#if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined (_VARIANT_ARDUINO_ZERO_)
+    shiftOut(sid, sclk, MSBFIRST, c);
+#else
+    int8_t i;
+    for (i=7; i>=0; i--) {
+        digitalWrite(sclk, LOW);
+        delayMicroseconds(5);      //need to slow down the data rate for Due and Zero
+        if (c & _BV(i))
+            digitalWrite(sid, HIGH);
+        else
+            digitalWrite(sid, LOW);
+  //      delayMicroseconds(5);      //need to slow down the data rate for Due and Zero
+        digitalWrite(sclk, HIGH);
+    }
+#endif
   /*
   int8_t i;
   for (i=7; i>=0; i--) {
