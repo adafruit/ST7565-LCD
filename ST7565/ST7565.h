@@ -21,14 +21,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 // some of this code was written by <cstone@pobox.com> originally; it is in the public domain.
 */
+#ifndef _ST7565_H
+#define _ST7565_H
 
-#if ARDUINO >= 100
- #include "Arduino.h"
-#else
- #include "WProgram.h"
-#endif
-
-#define swap(a, b) { uint8_t t = a; a = b; b = t; }
+#include "Arduino.h"
+#include <Adafruit_GFX.h>
+#include <Adafruit_SPIDevice.h>
+#include <SPI.h>
 
 #define BLACK 1
 #define WHITE 0
@@ -75,46 +74,40 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #define CMD_NOP  0xE3
 #define CMD_TEST  0xF0
 
-class ST7565 {
+class ST7565 : public Adafruit_GFX {
  public:
-  ST7565(int8_t SID, int8_t SCLK, int8_t A0, int8_t RST, int8_t CS) :sid(SID), sclk(SCLK), a0(A0), rst(RST), cs(CS) {}
-  ST7565(int8_t SID, int8_t SCLK, int8_t A0, int8_t RST) :sid(SID), sclk(SCLK), a0(A0), rst(RST), cs(-1) {}
+  ST7565(int8_t sclk_pin, int8_t din_pin, int8_t dc_pin,
+                   int8_t cs_pin, int8_t rst_pin);
+  ST7565(int8_t dc_pin, int8_t cs_pin, int8_t rst_pin,
+                   SPIClass *theSPI = &SPI);
 
-
-  void st7565_init(void);
-  void begin(uint8_t contrast);
-  void st7565_command(uint8_t c);
-  void st7565_data(uint8_t c);
-  void st7565_set_brightness(uint8_t val);
-  void clear_display(void);
-  void clear();
+  bool begin(uint8_t contrast = 12);
+  
+  void command(uint8_t c);
+  void data(uint8_t c);
+  
+  void setContrast(uint8_t val);
+  uint8_t getContrast(void);
+  
+  void clearDisplay(void);
   void display();
+  void updateBoundingBox(uint8_t xmin, uint8_t ymin, uint8_t xmax,
+                         uint8_t ymax);
 
-  void setpixel(uint8_t x, uint8_t y, uint8_t color);
-  uint8_t getpixel(uint8_t x, uint8_t y);
-  void fillcircle(uint8_t x0, uint8_t y0, uint8_t r, 
-		  uint8_t color);
-  void drawcircle(uint8_t x0, uint8_t y0, uint8_t r, 
-		  uint8_t color);
-  void drawrect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, 
-		uint8_t color);
-  void fillrect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, 
-		uint8_t color);
-  void drawline(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1, 
-		uint8_t color);
-  void drawchar(uint8_t x, uint8_t line, char c);
-  void drawstring(uint8_t x, uint8_t line, char *c);
-  void drawstring_P(uint8_t x, uint8_t line, const char *c);
-
-  void drawbitmap(uint8_t x, uint8_t y, 
-		  const uint8_t *bitmap, uint8_t w, uint8_t h,
-		  uint8_t color);
+  void drawPixel(int16_t x, int16_t y, uint16_t color);
+  void setPixel(int16_t x, int16_t y, bool color, uint8_t *buffer);
+  bool getPixel(int16_t x, int16_t y, uint8_t *buffer);
+  
+  void initDisplay();
+  void invertDisplay(bool i);
+  void scroll(int8_t vpixels, int8_t hpixels);
 
  private:
-  int8_t sid, sclk, a0, rst, cs;
-  void spiwrite(uint8_t c);
-
-  void my_setpixel(uint8_t x, uint8_t y, uint8_t color);
-
-  //uint8_t buffer[128*64/8]; 
+  Adafruit_SPIDevice *spi_dev = NULL;
+  int8_t _rstpin = -1, _dcpin = -1;
+  
+  uint8_t _contrast;        ///< Contrast level, Vop
+  uint8_t xUpdateMin, xUpdateMax, yUpdateMin, yUpdateMax;
 };
+
+#endif
