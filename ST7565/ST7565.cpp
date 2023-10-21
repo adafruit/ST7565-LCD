@@ -233,7 +233,7 @@ bool ST7565::getPixel(int16_t x, int16_t y, uint8_t *buffer) {
 }
 
 /*!
-  @brief Initialize the display. Set bias and contrast, enter normal mode.
+  @brief Initialize the display.
  */
 void ST7565::initDisplay() {
 
@@ -273,8 +273,13 @@ void ST7565::initDisplay() {
   command(CMD_SET_RESISTOR_RATIO | 0x6);
   command(CMD_DISPLAY_ON);
   command(CMD_SET_ALLPTS_NORMAL);
-  setContrast(_contrast);
 }
+
+/*!
+  @brief Set up SPI, initialize the display, set the bounding box
+  @param contrast Initial contrast value
+  @returns True on initialization success
+ */
 
 bool ST7565::begin(uint8_t contrast) {
 
@@ -289,11 +294,10 @@ bool ST7565::begin(uint8_t contrast) {
 
   _contrast = contrast;
   initDisplay();
+  setContrast(_contrast);
 
   // set up a bounding box for screen updates
   updateBoundingBox(0, 0, LCDWIDTH - 1, LCDHEIGHT - 1);
-  // Push out st7565_buffer to the Display (will show the AFI logo)
-  display();
 
   return true;
 }
