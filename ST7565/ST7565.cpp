@@ -292,9 +292,8 @@ bool ST7565::begin(uint8_t contrast) {
   if (_rstpin >= 0)
     pinMode(_rstpin, OUTPUT);
 
-  _contrast = contrast;
   initDisplay();
-  setContrast(_contrast);
+  setContrast(contrast);
 
   // set up a bounding box for screen updates
   updateBoundingBox(0, 0, LCDWIDTH - 1, LCDHEIGHT - 1);
